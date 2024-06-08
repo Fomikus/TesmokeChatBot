@@ -58,3 +58,13 @@ class LeftChatMember(BaseFilter):
         return message.left_chat_member is not None
 
 
+class BadWordFilter(BaseFilter):
+    async def __call__(self, message: Message, event_from_user: User):
+        # fn.contains maybe???
+        db_words: list[str] = [x.word for x in db.BadWords.select()]
+        for k in db_words:
+            if message.text.find(k) != -1:
+                return True
+        return False
+
+

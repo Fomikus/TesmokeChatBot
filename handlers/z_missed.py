@@ -8,7 +8,7 @@ import db
 import keyboards as kb
 import CallbackData as CbData
 import utils
-from filters import IsDeveloper, ChatTypeFilter, NewChatMember, LeftChatMember
+from filters import IsDeveloper, ChatTypeFilter, NewChatMember, LeftChatMember, BadWordFilter
 
 missed_route = Router()
 
@@ -49,3 +49,9 @@ async def helpMsg(msg: Message, state: FSMContext, bot: Bot):
 
 <code>!addmoder</code> - Добавить модератора
 <code>!delmoder</code> - Удалить модератора""", reply_markup=kb.dev_menu() if msg.from_user.id in config.ADMINS else None)
+
+
+@missed_route.message(BadWordFilter())
+async def deleteBadWords(msg: Message, state: FSMContext):
+    await state.clear()
+    await msg.delete()
